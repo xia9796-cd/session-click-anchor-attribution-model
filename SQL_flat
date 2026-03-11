@@ -11,7 +11,7 @@ BEGIN
 -- ===============================
 -- STEP 1: DELETE（重複を避ける）
 -- ===============================
-DELETE FROM `jobq-159704.analytics_279364443.events_flat`
+DELETE FROM `project199709.analytics_00000008.unnest_event_flat`
 WHERE event_date BETWEEN start_date AND end_date;
 
 -- ===============================
@@ -19,7 +19,7 @@ WHERE event_date BETWEEN start_date AND end_date;
 -- ===============================
 SET sql = (
   SELECT """
-    INSERT INTO `jobq-159704.analytics_279364443.events_flat` (
+    INSERT INTO `project199709.analytics_00000008.unnest_event_flat` (
       event_date, upid, event_name, device_category, event_ts,
       key, string_value, int_value, float_value, double_value,traffic_source_name,traffic_source_medium,traffic_source_source
     )
@@ -39,7 +39,7 @@ SET sql = (
           traffic_source.name,
           traffic_source.medium,
           traffic_source.source
-        FROM `jobq-159704.analytics_279364443.events_%s`,
+        FROM `project199709.analytics_00000008.events_%s`,
         UNNEST(event_params) AS ep
       """, FORMAT_DATE('%Y%m%d', d))
     , " UNION ALL ")
