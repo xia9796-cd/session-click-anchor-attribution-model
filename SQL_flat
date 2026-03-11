@@ -1,4 +1,14 @@
-
+-- ==================================================
+-- flat（GA4のrawデータをunnestしたもの）
+-- ==================================================
+-- Purpose:
+-- - GA4のrawデータをunnestして展開し、集計時のベースとして使いやすくしたもの
+-- - DELETE ,INSERTでデータを更新してくモデル。
+-- Execution Environment
+-- - GA4のrawデータを`UNNEST(event_params)`したもの。
+-- - DELETE,INSERTで7日前〜2日前までのデータを更新する。（GA4のrawデータがDHWに落ちてくるまでの遅延を想定しての期間設定。）
+-- - SUFFIXでは安定しない（pruneきく条件が不安定）ため、SET,EXECUTE IMMEDIATEとUNIONALLで実行している。
+-- ==================================================
 
 
 DECLARE start_date DATE DEFAULT DATE_SUB(CURRENT_DATE("Asia/Tokyo"), INTERVAL 7 DAY);
@@ -9,7 +19,7 @@ DECLARE sql STRING;
 BEGIN
 
 -- ===============================
--- STEP 1: DELETE（重複を避ける）
+-- STEP 1: DELETE（読む範囲を消して入れ直す。）
 -- ===============================
 DELETE FROM `project199709.analytics_00000008.unnest_event_flat`
 WHERE event_date BETWEEN start_date AND end_date;
