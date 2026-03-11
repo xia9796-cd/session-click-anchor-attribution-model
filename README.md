@@ -185,6 +185,74 @@ rawをunnestして、event_paramsを縦持ちにしたもの。
 #### データ母数チェック
 * CTE”base  ”のもとになるflatの品質を、rawのイベントパラメータ数をSQLで監視することで担保。 
 →rawのパラメータが綺麗にflatに落ちているかを監視。数値の不一致が発生した場合はflatを作成しているバックフィルSQLの見直しを実施する。
+
+```
+DECLARE start_date DATE DEFAULT DATE_SUB(CURRENT_DATE("Asia/Tokyo"), INTERVAL 30 DAY);
+DECLARE end_date   DATE DEFAULT DATE_SUB(CURRENT_DATE("Asia/Tokyo"), INTERVAL 2 DAY);
+DECLARE sql STRING;
+
+SET sql = (
+  SELECT STRING_AGG(
+    FORMAT("""
+      SELECT
+        DATE '%s' AS event_date,
+        COUNT(*) AS raw_event_cnt,
+        SUM(ARRAY_LENGTH(event_params)) AS raw_param_cnt
+      FROM `project199709.analytics_00000008.events_%s`
+    """,
+    FORMAT_DATE('%Y-%m-%d', d),
+    FORMAT_DATE('%Y%m%d', d)
+    ),
+    "\nUNION ALL\n"
+  )
+  FROM UNNEST(GENERATE_DATE_ARRAY(start_date, end_date)) d
+);
+
+EXECUTE IMMEDIATE FORMAT("""
+WITH daily AS (
+  SELECT
+    event_date,
+    EXTRACT(DAYOFWEEK FROM event_date) AS weekday_num, -- 1=Sun, 7=Sat
+    COUNT(*) AS row_count
+  FROM `project199709.analytics_00000008.unnest_event_flat`
+  WHERE event_date >= DATE_SUB(CURRENT_DATE("Asia/Tokyo"), INTERVAL 30 DAY)
+  GROUP BY event_date, weekday_num
+),
+
+daily_with_prev AS (
+  SELECT
+    event_date,
+    weekday_num,
+    row_count,
+    LAG(row_count) OVER (ORDER BY event_date) AS prev_day_row_count
+  FROM daily
+),
+
+raw_daily AS (
+%s
+)
+
+SELECT
+  d.event_date,
+  d.weekday_num,
+  d.row_count AS flat_row_count,
+  r.raw_param_cnt,
+
+  r.raw_param_cnt - d.row_count AS diff_from_raw_param_cnt
+
+
+FROM daily_with_prev d
+LEFT JOIN raw_daily r
+  ON d.event_date = r.event_date
+ORDER BY d.event_date DESC
+""", sql);
+
+```
+こちらで、`diff_from_raw_param_cnt`の結果が０になる。
+ `r.raw_param_cnt - d.row_count`はrawのevent_params数とflatの行数を比較している。
+ flatはrawのevent_paramsのみ展開しているから、上記の二つが同じ数値になるので、diffして結果が０になればテストOK。
+ 
+
 #### NULLチェック
 event_page_locationは`official-events`ページの訪問がない場合
 NULLになることがある。
@@ -219,7 +287,16 @@ HAVING count(*) >1
 以上で、結果なし。grain正常。
 
 #### セッション合計チェック
-
+All_official_events_sessionが各セグメントの合計と一致すること。
+```
+SELECT 
+SUM(All_official_events_session) as All_sessions,
+SUM(login_official_events_session)
++SUM(UnloginAll_official_events_session) as login_and_unlogin_sessions
+ FROM `project-0b98897e-3787-4157-aca.agg_table.official_events_summary_direct` 
+```
+以上の結果で、 All_sessionsと、login_and_unlogin_sessionsの結果が同じ数字になればOK。
+同じ観点で、他のsessionやclick全てをテスト。
 
 
   
