@@ -179,8 +179,43 @@ rawをunnestして、event_paramsを縦持ちにしたもの。
 * 毎日JST09:00に実行
 
 ### データ品質管理
+#### データ母数チェック
 * CTE”base  ”のもとになるflatの品質を、rawのイベントパラメータ数をSQLで監視することで担保。 
 →rawのパラメータが綺麗にflatに落ちているかを監視。数値の不一致が発生した場合はflatを作成しているバックフィルSQLの見直しを実施する。
+#### NULLチェック
+event_page_locationは`official-events`ページの訪問がない場合
+NULLになることがある。
+
+その場合、メトリクスは全て０であることを確認する。
+```
+<<テスト用SQL>>
+SELECT COUNT(*) as row
+ FROM `project-0b98897e-3787-4157-aca.agg_table.official_events_summary_direct` 
+WHERE event_page_location IS NULL
+AND (All_official_events_session >0
+OR Click_All_event_participattion>0)
+```
+以上で、結果が
+
+```
+row
+0
+```
+#### grainチェック
+```
+SELECT 
+event_date,
+entrance_source,
+device_category,
+event_page_location,
+COUNT(*) as row
+ FROM `project-0b98897e-3787-4157-aca.agg_table.official_events_summary_direct` 
+group by 1,2,3,4
+HAVING count(*) >1
+```
+以上で、結果なし。grain正常。
+
+#### セッション合計チェック
 
 
 
