@@ -133,8 +133,8 @@ flowchart TD
 ```
                 
 ## SQL
-sql/01_make_flat_table.sql  → unnest_event_flat作成時
-sql/02_session_click_anchor_attribution_model.sql　→　official_events_summary作成時
+- sql/01_make_flat_table.sql  → unnest_event_flat作成時
+- sql/02_session_click_anchor_attribution_model.sql　→　official_events_summary作成時
 ※それぞれSQLフォルダにコードあり。
 
 ### unnest_event_flat内の粒度
