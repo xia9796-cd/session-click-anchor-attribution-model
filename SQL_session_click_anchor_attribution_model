@@ -2,11 +2,11 @@
 -- Session Click Anchor Attribution Model
 -- ==================================================
 -- Purpose:
--- セッション内のクリックアンカーを元に
--- セッション属性を決定するモデル
+-- - セッション内のクリックアンカーを元にセッション属性を決定するモデル
+-- - DELETE ,INSERTでデータを更新してくモデル。
 -- Execution Environment
--- GA4のrawデータを`UNNEST(event_params)`したもの。（event_paramsを縦持ち）
--- ※sql_flatにて詳細なSQLを記載。
+-- - GA4のrawデータを`UNNEST(event_params)`したものをもとに集計。（event_paramsを縦持ち）※sql_flatにて詳細なSQLを記載。
+-- - DELETE,INSERTで7日前〜2日前までのデータを更新する。（GA4のrawデータがDHWに落ちてくるまでの遅延を想定しての期間設定。）
 -- Key Techniques:
 -- - WINDOW関数
 -- - LAST_VALUE IGNORE NULLS
@@ -16,7 +16,65 @@
 
 
 -- ==========================================
--- STEP1 基盤となるCTE
+-- STEP1 DELETE,INSERT構文
+-- 期間を指定して読み・消し・書き足す範囲を確定。
+-- ==========================================
+
+DECLARE start_date DATE DEFAULT DATE_SUB(CURRENT_DATE("Asia/Tokyo"), INTERVAL 7 DAY);
+DECLARE end_date   DATE DEFAULT DATE_SUB(CURRENT_DATE("Asia/Tokyo"), INTERVAL 2 DAY);
+
+
+DELETE FROM `project199709.agg_tabels_for_BI.official_events_summary`
+WHERE event_date BETWEEN start_date AND end_date;
+
+INSERT INTO `project199709.agg_tabels_for_BI.official_events_summary`(
+  event_date,
+  entrance_source,
+  event_page_location,
+  device_category,
+
+    -- ★ 全部の属性総計
+  All_official_events_session,
+  All_questionnaire_entrance_session,
+  All_questionnaire_complete_session,
+  All_LP_after_questionnaire_complete_session,
+  Click_All_event_participattion,
+  Click_All_questionnaire_complete_event_participattion,
+  Click_All_googleform_event_participattion,
+
+
+  -- ★ ログインユーザー
+  login_official_events_session,
+  login_questionnaire_entrance_session,
+  login_questionnaire_complete_session,
+  login_LP_after_questionnaire_complete_session,
+  Click_login_event_participattion,
+  Click_login_questionnaire_complete_event_participattion,
+  Click_login_googleform_event_participattion,
+
+  -- ★ 未ログインユーザー全て
+  UnloginAll_official_events_session,
+  UnloginAll_questionnaire_entrance_session,
+  UnloginAll_questionnaire_complete_session,
+  UnloginAll_LP_after_questionnaire_complete_session,
+  Click_UnloginAll_event_participattion,
+  Click_UnloginAll_questionnaire_complete_event_participattion,
+  Click_UnloginAll_googleform_event_participattion,
+
+  -- ★ 未ログインユーザーで新規登録会員
+  UnloginNew_official_events_session,
+  UnloginNew_questionnaire_entrance_session,
+  UnloginNew_questionnaire_complete_session,
+  UnloginNew_LP_after_questionnaire_complete_session,
+  Click_UnloginNew_event_participattion,
+  Click_UnloginNew_questionnaire_complete_event_participattion,
+  Click_UnloginNew_googleform_event_participattion,
+
+)
+
+
+-- ==========================================
+-- STEP2 基盤となるCTE
 -- normalized：flatから必要なevent_paramsを展開したもの
 -- base：イベント粒度で必要用に正規化したもの
 -- datebase：BI内で推移グラフを使用する際に、日付によってグラフが消えないようにするためのもの
@@ -37,7 +95,7 @@ WITH normalized AS (
     MAX(IF(params_key = 'page_location', string_value, NULL)) AS page_location,
     MAX(IF(params_key = 'Click_Classes', string_value, NULL)) AS Click_Classes,
     MAX(IF(params_key = 'traffic_source_source', string_value, NULL)) AS traffic_source
-  FROM `jobq-159704.analytics_279364443.events_flat`
+  FROM `project199709.analytics_00000008.events_flat`
   WHERE event_date BETWEEN start_date AND end_date
   GROUP BY
     upid,
@@ -98,7 +156,7 @@ device_category_base as(
 )
 
 -- ==========================================
--- STEP2 　セッションごとのフラグを立てるCTE
+-- STEP3 　セッションごとのフラグを立てるCTE
 -- ANY_VALUE(device_category)：GA4想定なのでセッション内でデバイスが揺れないことを前提。
 -- alias "is_logged_in_at_official_events"：`official-events`ページ以降にログインしたユーザーをログインユーザーとして識別。
 -- alias "is_registered_at_official_events"：`official-events`ページ以降に会員登録したユーザーを会員登録ユーザーとして識別。
@@ -150,7 +208,7 @@ session_flags AS (
     user_unique_session_id
 
 -- ==========================================
--- STEP3 セッション集計
+-- STEP4 セッション集計
 -- 以下のセグメントごとに集計
 -- - 全ユーザー
 -- - `official-events`ページ前にログインあり
@@ -326,7 +384,7 @@ b.anchor_event_page
 ),
 
 -- ==========================================
--- STEP4 クリック集計
+-- STEP5 クリック集計
 -- 以下のセグメントごとに集計
 -- - 全ユーザー
 -- - `official-events`ページ前にログインあり
@@ -437,7 +495,7 @@ b.anchor_event_page
 )
 
 -- ==========================================
--- STEP5 最終集計集計
+-- STEP6 最終集計集計
 -- ========================================== 
 SELECT
   db.event_date,
