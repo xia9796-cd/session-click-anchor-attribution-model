@@ -17,10 +17,10 @@ BI用に、属性ごとにイベント・セッションを集計したテーブ
 GA4のイベントデータはevent粒度のため、
 official-eventsページを基点としたセッション分析が困難。
 
-## Approach
+## アプローチ
 Window関数を用いて
-セッション内で最後に通過したofficial-eventsページを
-アンカーページとして付与する。
+セッション内で最後に通過した`official-events`ページを
+`anchor_page_location`として付与する。
 
 
 
@@ -91,6 +91,7 @@ Window関数を用いて
 ''と’’を含むページに遷移　（このページ以外に、これらをURLにもつページはない）
 ↓
 google form 
+
 ### GTMのイベント設定
 該当のボタンクリックは以下イベントで取れている。
 * OfficialEventsClick（"GO"ボタン、"Submit"ボタン、'back_to_home'ボタン）
