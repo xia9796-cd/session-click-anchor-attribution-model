@@ -118,11 +118,11 @@ google form 
 * アンカーページ通過時のフラグのgrainはセッション単位(CONCAT(user_pseudo_id,'-',ga_session_id))
 
 ## テーブル一覧
-- project199709.analytics_00000008.events_{{YYYYMMDD}}
+- `project199709.analytics_00000008.events_{{YYYYMMDD}}`
 ：GA4の生データ、NESTあり。
-- unnest_event_flat
+- `project199709.analytics_00000008.unnest_event_flat`
 ：GA4の生データに対して、NESTされているものを縦持ちにしたもの
-- project199709.agg_tabels_for_BI.official_events_summary
+- `project199709.agg_tabels_for_BI.official_events_summary`
 ：要件に合わせて、`official-events`ページに対してアトリビューション集計をしたもの。
 こちらの作成・運用管理が今回のプロジェクトのゴール
 
@@ -136,16 +136,16 @@ flowchart TD
 ```
                 
 ## SQL
-- sql/01_make_flat_table.sql  → unnest_event_flat作成時
-- sql/02_session_click_anchor_attribution_model.sql　→　official_events_summary作成時
-※それぞれSQLフォルダにコードあり。
+- `sql/01_make_flat_table.sql`  → `unnest_event_flat`作成・更新時
+- `sql/02_session_click_anchor_attribution_model.sql`　→　`official_events_summary`テーブル作成・更新時
+※それぞれsqlフォルダにコードあり。
 
 ### unnest_event_flat内の粒度
 rawをunnestして、event_paramsを縦持ちにしたもの。
-※SQL/01_make_flat_tabel.sqlにコード例あり。
+※`sql/01_make_flat_tabel.sql`にコード例あり。
 
 ### agg/martのSQL内の粒度（CTE）
-※SQL/02_session_click_anchor_attribution_model.sqlにコード例あり。
+※`sql/02_session_click_anchor_attribution_model.sql`にコード例あり。
 
 * normalized  
 →flatから必要なevent_paramsを取り出したもの
