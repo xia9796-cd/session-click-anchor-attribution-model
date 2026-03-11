@@ -76,6 +76,7 @@ Window関数を用いて
  
 ## 計測環境
 ### サイトのファネル
+```
 /official-events/　ページ
 ↓ 
 "Go"ボタンクリック 
@@ -91,7 +92,7 @@ Window関数を用いて
 ''と’’を含むページに遷移　（このページ以外に、これらをURLにもつページはない）
 ↓
 google form 
-
+```
 ### GTMのイベント設定
 該当のボタンクリックは以下イベントで取れている。
 * OfficialEventsClick（"GO"ボタン、"Submit"ボタン、'back_to_home'ボタン）
