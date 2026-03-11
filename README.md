@@ -190,7 +190,7 @@ NULLになることがある。
 ```
 <<テスト用SQL>>
 SELECT COUNT(*) as row
- FROM `project-0b98897e-3787-4157-aca.agg_table.official_events_summary_direct` 
+ FROM `project199709.agg_tabels_for_BI.official_events_summary` 
 WHERE event_page_location IS NULL
 AND (All_official_events_session >0
 OR Click_All_event_participattion>0)
@@ -209,7 +209,7 @@ entrance_source,
 device_category,
 event_page_location,
 COUNT(*) as row
- FROM `project-0b98897e-3787-4157-aca.agg_table.official_events_summary_direct` 
+ FROM `project199709.agg_tabels_for_BI.official_events_summary` 
 group by 1,2,3,4
 HAVING count(*) >1
 ```
