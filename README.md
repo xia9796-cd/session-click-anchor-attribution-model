@@ -17,8 +17,17 @@ BI用に、属性ごとにイベント・セッションを集計したテーブ
 GA4のイベントデータはevent粒度のため、
 official-eventsページを基点としたセッション分析が困難。
 
+また、セッションが日またぎになる場合、通常のセッション集計では正しい`anchor_page_location`のattributionができない。
+
+さらに、`official-events`ページからイベント参加までの動線をデバイス・流入別に分析する必要がある。
+
 ## アプローチ
-Window関数を用いて
+1. GA４　rawをフラット化
+2. session_anchorを計算
+3. session/clickを分離
+4. martテーブルを作成。
+
+以上を、Window関数を用いて
 セッション内で最後に通過した`official-events`ページを
 `anchor_page_location`として付与する。
 
