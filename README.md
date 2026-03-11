@@ -12,14 +12,28 @@ BI用に、属性ごとにイベント・セッションを集計したテーブ
 ## 詳細
  特定のページ（/official-events/を含む全てのページ）、そのセッションの入り口source、デバイスを基準として、 このページを通ったのちの、以下のページセッションとボタンクリックを全てofficial-eventsページに載せる。 
 
+
+## 課題間
+GA4のイベントデータはevent粒度のため、
+official-eventsページを基点としたセッション分析が困難。
+
+## Approach
+Window関数を用いて
+セッション内で最後に通過したofficial-eventsページを
+アンカーページとして付与する。
+
+
+
 ## テーブルイメージとテーブルスキーマ
 ### テーブルイメージ
-event_date	entrance_source	event_page_location	device_category	All_official_events_session	All_questionnaire_entrance_session	All_questionnaire_complete_session	All_LP_after_questionnaire_complete_session	Click_All_event_participattion	Click_All_questionnaire_complete_event_participattion	Click_All_googleform_event_participattion	login_official_events_session	login_questionnaire_entrance_session	login_questionnaire_complete_session	login_LP_after_questionnaire_complete_session	Click_login_event_participattion	Click_login_questionnaire_complete_event_participattion	Click_login_googleform_event_participattion	UnloginAll_official_events_session	UnloginAll_questionnaire_entrance_session	UnloginAll_questionnaire_complete_session	UnloginAll_LP_after_questionnaire_complete_session	Click_UnloginAll_event_participattion	Click_UnloginAll_questionnaire_complete_event_participattion	Click_UnloginAll_googleform_event_participattion	UnloginNew_official_events_session	UnloginNew_questionnaire_entrance_session	UnloginNew_questionnaire_complete_session	UnloginNew_LP_after_questionnaire_complete_session	Click_UnloginNew_event_participattion	Click_UnloginNew_questionnaire_complete_event_participattion	Click_UnloginNew_googleform_event_participattion
-2026-02-17	Organic	https://job-q.me/official-events/12/	mobile	2	0	0	0	0	0	0	2	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-2026-02-17	Organic		tablet	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-2026-02-17	Organic		smart.tv	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-2026-02-17	Organic		desktop	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
-2026-02-17	X		mobile	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0
+### Sample Output
+
+| event_date | entrance_source | event_page_location | device_category | All_official_events_session | All_questionnaire_entrance_session | Click_All_event_participattion |
+|------------|----------------|---------------------|-----------------|-----------------------------|-------------------------------------|--------------------------------|
+| 2026-02-17 | Organic | /official-events/12 | mobile | 2 | 1 | 1 |
+| 2026-02-17 | Organic | /official-events/12 | desktop | 0 | 0 | 0 |
+| 2026-02-17 | X | /official-events/12 | mobile | 1 | 0 | 1 |
+| 2026-02-17 | instagram | /official-events/12 | mobile | 1 | 1 | 0 |
 
 
 
@@ -55,16 +69,7 @@ event_date	entrance_source	event_page_location	device_category	All_official_even
 - UnloginAll_LP_after_questionnaire_complete_session,
 - Click_UnloginAll_event_participattion,
 - Click_UnloginAll_questionnaire_complete_event_participattion,
-- Click_UnloginAll_googleform_event_participattion,
-
-  -- ★ 未ログインユーザーで新規登録会員
-- UnloginNew_official_events_session,
-- UnloginNew_questionnaire_entrance_session,
-- UnloginNew_questionnaire_complete_session,
-- UnloginNew_LP_after_questionnaire_complete_session,
-- Click_UnloginNew_event_participattion,
-- Click_UnloginNew_questionnaire_complete_event_participattion,
-- Click_UnloginNew_googleform_event_participattion,
+- Click_UnloginAll_googleform_event_participattion
 
 
 
@@ -114,28 +119,29 @@ google form 
 
 
 ## DAG（データフロー）
-GTM  →  GA4         → Bigquery GA4_raw　→ Bigquery raw_to_flat　
-                                          ↓
-　　　　　　　　　　　　　　　　　　　　stg_official_event
-                                 　　　　  ↓
-　　　　　　　　　　　　　　　　　　　　int_session_base
-　　　　　　　　　　　　　　　　　　　　　　　    ↓
-　　　　　　　　　　　　　　　　　　　　int_session_flag
-         　　　　　　　　　　　　　　　　　　　　↓
-　　　　　　　　　　　　　　　int_click_count　　int_session_count　　
-         　　　　　　　　　　　　　　　　　　　　↓
-　　　　　　　　　　　　　　　　　　　mart_official_events
-         　　　　　　　　　　　　　　　　　　　　
-　　　　　　　　　　　　　　　　　　　
+```mermaid
+flowchart TD
+    GTM --> GA4
+    GA4 --> GA4_raw
+    GA4_raw --> unnest_event_flat
+    unnest_event_flat --> official_events_agg
+```
 
+                
+## SQL
+sql/01_make_flat_table.sql  
+sql/02_session_click_anchor_attribution_model.sql
+※それぞれSQLフォルダにコードあり。
 
-### flat内の粒度
+### unnest_event_flat内の粒度
 rawをunnestして、event_paramsを縦持ちにしたもの。
-
+※SQL/01_make_flat_tabel.sqlにコード例あり。
 
 ### agg/martのSQL内の粒度（CTE）
-* base   
-→より後に users/add を通ったもの全て
+※SQL/02_session_click_anchor_attribution_model.sqlにコード例あり。
+
+* normalized  
+→flatから必要なevent_paramsを取り出したもの
 
 * date_base 
 →日付欠損防止のための日付ベースCTE
@@ -146,20 +152,20 @@ rawをunnestして、event_paramsを縦持ちにしたもの。
 * device_category_base 
 →デバイス欠損防止のためのデバイスベースCTE
 
-* int_session_base 
+* base 
 →イベント粒度で、baseを正規化(utmを抜き出す)、直前の/official-events/をwindowで持つ。
 （セッションカウントやクリックカウントを正確にofficial-events/[0-9+]ページに帰属させるため 直近のofficial-events/[0-9+]ページをwindow関数で保持し、ページの帰属元と帰属範囲を確定。）
 
-* int_session_flag 
+* session_flag 
 →セッション粒度で、フラグ、デバイスの確定を行う。
 
-* int_session_count 
+* session_count 
 →日付、/official-events/ページ、デバイス、入り口sourceごと、ユーザー属性ごとにセッションカウント
 
-* int_click_count 
+* click_count 
 →日付、/official-events/ページ、デバイス、入り口sourceごと、ユーザー属性ごとにクリックカウント
 
-* mart_official_events 
+* 最終SELCT 
 →日付、/official-events/ページ、デバイス、入り口sourceごとに集計。 
 
 
