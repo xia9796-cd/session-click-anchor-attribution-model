@@ -5,8 +5,8 @@
 -- セッション内のクリックアンカーを元に
 -- セッション属性を決定するモデル
 -- Execution Environment
--- 
--- 
+-- GA4のrawデータを`UNNEST(event_params)`したもの。（event_paramsを縦持ち）
+-- ※sql_flatにて詳細なSQLを記載。
 -- Key Techniques:
 -- - WINDOW関数
 -- - LAST_VALUE IGNORE NULLS
@@ -19,8 +19,10 @@
 -- STEP1 基盤となるCTE
 -- normalized：flatから必要なevent_paramsを展開したもの
 -- base：イベント粒度で必要用に正規化したもの
--- 
--- 
+-- datebase：BI内で推移グラフを使用する際に、日付によってグラフが消えないようにするためのもの
+-- enctrance_source_master：BI内で推移グラフを使用する際に、日付ごとにentrance_sourceのグラフが消えないようにするもの
+-- device_category_base：BI内で推移グラフを使用する際に、日付ごとにdevice_categoryのグラフが消えないようにするもの
+-- ※base,master系の欠損防止CTEは、最終セレクトでLEFT JOIN,CROSS JOINする。
 -- ==========================================
 
 
