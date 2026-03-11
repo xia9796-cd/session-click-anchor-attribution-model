@@ -1,8 +1,8 @@
 -- ==================================================
--- flat（GA4のrawデータをunnestしたもの）
+-- flatテーブル（GA4のrawデータをunnestしたもの）を作成するSQL
 -- ==================================================
 -- Purpose:
--- - GA4のrawデータをunnestして展開し、集計時のベースとして使いやすくしたもの
+-- - GA4のrawデータをunnestして展開し、集計時のベースとして使いやすくしたもの。（SQL_session_clicl_attribution_modelのCTE"normalized"の元になるテーブル）
 -- - DELETE ,INSERTでデータを更新してくモデル。
 -- Execution Environment
 -- - GA4のrawデータを`UNNEST(event_params)`したもの。
