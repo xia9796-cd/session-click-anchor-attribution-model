@@ -95,7 +95,7 @@ WITH normalized AS (
     MAX(IF(params_key = 'page_location', string_value, NULL)) AS page_location,
     MAX(IF(params_key = 'Click_Classes', string_value, NULL)) AS Click_Classes,
     MAX(IF(params_key = 'traffic_source_source', string_value, NULL)) AS traffic_source
-  FROM `project199709.analytics_00000008.events_flat`
+  FROM `project199709.analytics_00000008.unnest_event_flat`
   WHERE event_date BETWEEN start_date AND end_date
   GROUP BY
     upid,
