@@ -118,9 +118,12 @@ google form 
 * アンカーページ通過時のフラグのgrainはセッション単位(CONCAT(user_pseudo_id,'-',ga_session_id))
 
 ## テーブル一覧
-- GA4raw：GA4の生データ、NESTあり。
-- unnest_event_flat：GA4の生データに対して、NESTされているものを縦持ちにしたもの
-- official_events_summary：要件に合わせて、`official-events`ページに対してアトリビューション集計をしたもの。
+- project199709.analytics_00000008.events_{{YYYYMMDD}}
+：GA4の生データ、NESTあり。
+- unnest_event_flat
+：GA4の生データに対して、NESTされているものを縦持ちにしたもの
+- project199709.agg_tabels_for_BI.official_events_summary
+：要件に合わせて、`official-events`ページに対してアトリビューション集計をしたもの。
 こちらの作成・運用管理が今回のプロジェクトのゴール
 
 ## DAG（データフロー）
