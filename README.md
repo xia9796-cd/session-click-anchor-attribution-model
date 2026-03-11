@@ -117,6 +117,11 @@ google form 
 * セッションの日付は発生時（開始日ではない）
 * アンカーページ通過時のフラグのgrainはセッション単位(CONCAT(user_pseudo_id,'-',ga_session_id))
 
+## テーブル一覧
+- GAraw：GA4の生データ、NESTあり。
+- unnest_event_flat：GA4の生データに対して、NESTされているものを縦持ちにしたもの
+- official_events_summary：要件に合わせて、`official-events`ページに対してアトリビューション集計をしたもの。
+こちらの作成・運用管理が今回のプロジェクトのゴール
 
 ## DAG（データフロー）
 ```mermaid
@@ -124,13 +129,12 @@ flowchart TD
     GTM --> GA4
     GA4 --> GA4_raw
     GA4_raw --> unnest_event_flat
-    unnest_event_flat --> official_events_agg
+    unnest_event_flat --> official_events_summary
 ```
-
                 
 ## SQL
-sql/01_make_flat_table.sql  
-sql/02_session_click_anchor_attribution_model.sql
+sql/01_make_flat_table.sql  → unnest_event_flat作成時
+sql/02_session_click_anchor_attribution_model.sql　→　official_events_summary作成時
 ※それぞれSQLフォルダにコードあり。
 
 ### unnest_event_flat内の粒度
