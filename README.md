@@ -4,13 +4,19 @@ interval-based attribution model using session anchors and window function in Bi
 README
 
 ## 概要
-このプロジェクトはGA4において、日跨ぎセッションを考慮した上で、 複数あるアンカーページのうち、通過したページの種類ごとにセッション属性を確定して、
+このプロジェクトはGA4において、日跨ぎセッションを考慮した上で、 
+アンカーページに対して、通過したページの種類ごとにセッション属性を確定して、
 BI用に、属性ごとにイベント・セッションを集計したテーブルを作成する実装例です。  
 
 インターバルの確定にはJOINではなくWINDOW関数を用い、粒度崩壊並び多対多爆発を防ぐ設計としています。
 
 ## 詳細
- 特定のページ（/official-events/を含む全てのページ）、そのセッションの入り口source、デバイスを基準として、 このページを通ったのちの、以下のページセッションとボタンクリックを全てofficial-eventsページに載せる。 
+ 特定のページ（/official-events/を含む全てのページ）、そのセッションの入り口source、デバイスを基準として、 
+ このページを通ったのちの、
+ - それ以降の指定ページセッション
+ - ボタンクリック
+ - CTR等の算出済みメトリクス
+以上全てをofficial-eventsページに載せる。 
 
 
 ## 課題間
@@ -32,8 +38,49 @@ official-eventsページを基点としたセッション分析が困難。
 `anchor_page_location`として付与する。
 
 
+## 計測環境
+### サイトのファネル
+```
+/official-events/　ページ
+↓ 
+"Go"ボタンクリック 
+↓ 
+''と’’を含むページ（アンケート回答ページ）に遷移。 ボタンを押すことでユーザーごとに発行される。　（このページ以外に、これらをURLにもつページはない）
+↓
+"Submit"ボタンクリック 
+↓
+''と’’を含むページ（アンケート回答完了ページ）に遷移。 ボタンを押すことでユーザーごとに発行される。　（このページ以外に、これらをURLにもつページはない）
+↓
+'back_to_home'ボタンクリック
+↓
+''と’’を含むページに遷移　（このページ以外に、これらをURLにもつページはない）
+↓
+google form 
+```
+### GTMのイベント設定
+該当のボタンクリックは以下イベントで取れている。
+* OfficialEventsClick（イベント参加時の"GO"ボタン、回答後のLP遷移する'back_to_home'ボタン）
+    * classが付与されているので、Click_class名でクリック箇所を判別できるよう、 event_paramsにClick_Classesを取得。
+* AfterQuestionnaireGoogleFormClick
+    * google formはclass付与がないため、CSSセレクタで選択。
+### GA4→BQのパイプライン
+* GA4 analyticsのUIでBQと連携。（Google側に依存。） 
 
 ## テーブルイメージとテーブルスキーマ
+### SQLで集計するデータ
+日付、アンカーページ、デバイス、流入元ごとに、ユーザー属性ごとに
+- アンカーページ（`offiial-events`含むページ）セッション数
+- アンケート回答ページセッション数
+- アンケート回答完了ページセッション数
+- アンケート完了後のボタンクリックで遷移するLPページセッション数
+- アンケート参加ボタンクリック数
+- アンケート完了後、LPページに遷移するボタンクリック数
+- アンケート参加率（アンケート回答ページセッション数/アンカーページセッション数）
+- アンケート回答完了率（アンケート回答完了ページセッション数/アンケート回答完了ページセッション数）
+
+以上を算出する。
+  
+
 ### テーブルイメージ
 ### Sample Output
 
@@ -97,34 +144,7 @@ official-eventsページを基点としたセッション分析が困難。
 
 
 
- 
-## 計測環境
-### サイトのファネル
-```
-/official-events/　ページ
-↓ 
-"Go"ボタンクリック 
-↓ 
-''と’’を含むページに遷移。 ボタンを押すことでユーザーごとに発行される。　（このページ以外に、これらをURLにもつページはない）
-↓
-"Submit"ボタンクリック 
-↓
-''と’’を含むページに遷移。 ボタンを押すことでユーザーごとに発行される。　（このページ以外に、これらをURLにもつページはない）
-↓
-'back_to_home'ボタンクリック
-↓
-''と’’を含むページに遷移　（このページ以外に、これらをURLにもつページはない）
-↓
-google form 
-```
-### GTMのイベント設定
-該当のボタンクリックは以下イベントで取れている。
-* OfficialEventsClick（"GO"ボタン、"Submit"ボタン、'back_to_home'ボタン）
-    * classが付与されているので、Click_class名でクリック箇所を判別できるよう、 event_paramsにClick_Classesを取得。
-* AfterQuestionnaireGoogleFormClick
-    * google formはclass付与がないため、CSSセレクタで選択。
-### GA4→BQのパイプライン
-* GA4 analyticsのUIでBQと連携。（Google側に依存。） 
+
 
 ## 要件
 
@@ -199,13 +219,16 @@ rawをunnestして、event_paramsを縦持ちにしたもの。
 →日付、/official-events/ページ、デバイス、入り口sourceごと、ユーザー属性ごとにクリックカウント
 
 * 最終SELCT 
-→日付、/official-events/ページ、デバイス、入り口sourceごとに集計。 
+→日付、/official-events/ページ、デバイス、入り口sourceごとにJOINし、`session_count`と`click_count`でカウントした指標に加え、
+  イベント参加率とアンケート完了率を算出。 
 
 
 
-### バックフィル
+### バックフィル（incremental design）
 * CURRENT_DATE INTERVAL 7 DAY ~ CURRENT_DATE INTERVAL 2 DAY の期間をDELETE&INSERT
 * 毎日JST09:00に実行
+→GA4のデータが落ちるまでの遅延を考慮して、期間の開始日をINTERVAL7日前からにしている。
+→またGA4ではリアルタイムでデータテーブルが作られるわけではないので、確実にデータが存在する2日前までを期間の終了日にする
 
 ### データ品質管理
 #### データ母数チェック
@@ -324,6 +347,21 @@ SUM(login_official_events_session)
 以上の結果で、 All_sessionsと、login_and_unlogin_sessionsの結果が同じ数字になればOK。
 同じ観点で、他のsessionやclick全てをテスト。
 
+#### rateのエラーチェック
+rate系の指標が正しく出ているかを以下で検証。
+
+```
+SELECT * FROM `project-0b98897e-3787-4157-aca.agg_table.official_events_summary_direct` 
+WHERE All_events_participate_rate >1
+OR All_questionnaire_complete_rate>1
+OR login_events_participate_rate >1
+OR login_questionnaire_complete_rate >1
+OR UnloginAll_events_participate_rate >1
+OR UnloginAll_questionnaire_complete_rate >1
+OR UnloginNew_events_participate_rate >1
+OR UnloginNew_questionnaire_complete_rate>1
+```
+こちらで、表示されるデータなし。OK。
 
   
 
