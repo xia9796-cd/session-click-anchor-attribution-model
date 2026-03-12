@@ -51,34 +51,48 @@ official-eventsページを基点としたセッション分析が困難。
 - entrance_source,STRING
 - event_page_location,STRING
 - device_category,STRING
- 以下全てINT64
+ 
+** 以下INT64**
     -- ★ 全部の属性総計
-- All_official_events_session,
-- All_questionnaire_entrance_session,
-- All_questionnaire_complete_session,
-- All_LP_after_questionnaire_complete_session,
-- Click_All_event_participattion,
-- Click_All_questionnaire_complete_event_participattion,
-- Click_All_googleform_event_participattion,
+- All_official_events_session,INT64
+- All_questionnaire_entrance_session,INT64
+- All_questionnaire_complete_session,INT64
+- All_LP_after_questionnaire_complete_session,INT64
+- Click_All_event_participattion,INT64
+- Click_All_questionnaire_complete_event_participattion,INT64
+- Click_All_googleform_event_participattion,INT64
 
 
   -- ★ ログインユーザー
-- login_official_events_session,
-- login_questionnaire_entrance_session,
-- login_questionnaire_complete_session,
-- login_LP_after_questionnaire_complete_session,
-- Click_login_event_participattion,
-- Click_login_questionnaire_complete_event_participattion,
-- Click_login_googleform_event_participattion,
+- login_official_events_session,INT64
+- login_questionnaire_entrance_session,INT64
+- login_questionnaire_complete_session,INT64
+- login_LP_after_questionnaire_complete_session,INT64
+- Click_login_event_participattion,INT64
+- Click_login_questionnaire_complete_event_participattion,INT64
+- Click_login_googleform_event_participattion,INT64
 
   -- ★ 未ログインユーザー全て
-- UnloginAll_official_events_session,
-- UnloginAll_questionnaire_entrance_session,
-- UnloginAll_questionnaire_complete_session,
-- UnloginAll_LP_after_questionnaire_complete_session,
-- Click_UnloginAll_event_participattion,
-- Click_UnloginAll_questionnaire_complete_event_participattion,
-- Click_UnloginAll_googleform_event_participattion
+- UnloginAll_official_events_session,INT64
+- UnloginAll_questionnaire_entrance_session,INT64
+- UnloginAll_questionnaire_complete_session,INT64
+- UnloginAll_LP_after_questionnaire_complete_session,INT64
+- Click_UnloginAll_event_participattion,INT64
+- Click_UnloginAll_questionnaire_complete_event_participattion,INT64
+- Click_UnloginAll_googleform_event_participattion,INT64
+
+** 以下FLOAT64**
+  -- ★ イベント参加率
+- All_events_participate_rate,FLOAT64
+- login_events_participate_rate,FLOAT64
+- UnloginAll_events_participate_rate,FLOAT64
+- UnloginNew_events_participate_rate,FLOAT64
+
+  -- ★ イベント完了率
+- All_questionnaire_complete_rate,FLOAT64
+- login_questionnaire_complete_rate,FLOAT64
+- UnloginAll_questionnaire_complete_rate,FLOAT64
+- UnloginNew_questionnaire_complete_rate,FLOAT64
 
 
 
