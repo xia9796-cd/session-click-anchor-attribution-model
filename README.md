@@ -53,6 +53,7 @@ official-eventsページを基点としたセッション分析が困難。
 - device_category,STRING
  
 ** 以下INT64**
+  
     -- ★ 全部の属性総計
 - All_official_events_session,INT64
 - All_questionnaire_entrance_session,INT64
@@ -82,6 +83,7 @@ official-eventsページを基点としたセッション分析が困難。
 - Click_UnloginAll_googleform_event_participattion,INT64
 
 ** 以下FLOAT64**
+
   -- ★ イベント参加率
 - All_events_participate_rate,FLOAT64
 - login_events_participate_rate,FLOAT64
