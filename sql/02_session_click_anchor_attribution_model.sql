@@ -70,6 +70,18 @@ INSERT INTO `project199709.agg_tabels_for_BI.official_events_summary`(
   Click_UnloginNew_questionnaire_complete_event_participattion,
   Click_UnloginNew_googleform_event_participattion,
 
+  -- ★ イベント参加率
+  All_events_participate_rate,
+  login_events_participate_rate,
+  UnloginAll_events_participate_rate,
+  UnloginNew_events_participate_rate,
+
+  -- ★ イベント参加完了率
+  All_questionnaire_complete_rate,
+  login_questionnaire_complete_rate,
+  UnloginAll_questionnaire_complete_rate,
+  UnloginNew_questionnaire_complete_rate
+
 )
 
 
@@ -539,7 +551,20 @@ COALESCE(sc.UnloginNew_questionnaire_complete_session, 0) AS UnloginNew_question
 COALESCE(sc.UnloginNew_LP_after_questionnaire_complete_session, 0) AS UnloginNew_LP_after_questionnaire_complete_session,
 COALESCE(cc.Click_UnloginNew_event_participattion, 0) AS Click_UnloginNew_event_participattion,
 COALESCE(cc.Click_UnloginNew_questionnaire_complete_event_participattion, 0) AS Click_UnloginNew_questionnaire_complete_event_participattion,
-COALESCE(cc.Click_UnloginNew_googleform_event_participattion, 0) AS Click_UnloginNew_googleform_event_participattion
+COALESCE(cc.Click_UnloginNew_googleform_event_participattion, 0) AS Click_UnloginNew_googleform_event_participattion,
+
+-- ★ イベント参加率
+IFNULL(ROUND(SAFE_DIVIDE(sc.All_questionnaire_entrance_session,sc.All_official_events_session),4),0) as All_events_participate_rate,
+IFNULL(ROUND(SAFE_DIVIDE(sc.login_questionnaire_entrance_session,sc.login_official_events_session),4),0) as login_events_participate_rate,
+IFNULL(ROUND(SAFE_DIVIDE(sc.UnloginAll_questionnaire_entrance_session,sc.UnloginAll_official_events_session),4),0) as UnloginAll_events_participate_rate,
+IFNULL(ROUND(SAFE_DIVIDE(sc.UnloginNew_questionnaire_entrance_session,sc.UnloginNew_official_events_session),4),0) as UnloginNew_events_participate_rate,
+
+-- ★ イベント完了率
+IFNULL(ROUND(SAFE_DIVIDE(sc.All_questionnaire_complete_session,sc.All_questionnaire_entrance_session),4),0) as All_questionnaire_complete_rate,
+IFNULL(ROUND(SAFE_DIVIDE(sc.login_questionnaire_complete_session,sc.login_questionnaire_entrance_session),4),0) as login_questionnaire_complete_rate,
+IFNULL(ROUND(SAFE_DIVIDE(sc.UnloginAll_questionnaire_complete_session,sc.UnloginAll_questionnaire_entrance_session),4),0) as UnloginAll_questionnaire_complete_rate,
+IFNULL(ROUND(SAFE_DIVIDE(sc.UnloginNew_questionnaire_complete_session,sc.UnloginNew_questionnaire_entrance_session),4),0) as UnloginNew_questionnaire_complete_rate
+
 
 FROM date_base db 
 CROSS JOIN entrance_source_master esm 
