@@ -149,10 +149,10 @@ google form 
 ## 要件
 
 * ログインユーザー
-    * これらを通らずに以下。
+    * 以下を通らずに`official-events`以降に進んだユーザー。
         * offical-events/  より後に、users/add を通らなかったもの （offial-events/ より前に未ログインだった→ログインしたユーザーもこちらに含まれる。）
 * 未ログインユーザー
-    * official-events/  より後に users/add を通ったもの全て
+    * official-events/  より後に users/add を通ったユーザー全て。
 * 未登録ユーザ・同時登録ユーザー
     * 未ログインユーザーのうちnew_users/which を通ったものとする
     * 未ログインユーザーのうち/new_users/adult_basic/agreement を通ったものとする
