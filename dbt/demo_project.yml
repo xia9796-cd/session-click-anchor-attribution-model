@@ -1,6 +1,8 @@
 name: demo_project
-version: 1.0
+version: 1.0.0
 config-version: 2
+
+profile: 'demo_project'
 
 model-paths: ["models"]
 
