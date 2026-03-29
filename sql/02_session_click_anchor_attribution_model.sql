@@ -232,37 +232,37 @@ session_flags AS (
 /*セッションとクリック：ここから集計ロジック*/
 session_count as (
 SELECT
-sb.event_date,
+b.event_date,
 sf.device_category,
 sf.entrance_source,
-sb.anchor_event_page as event_page_location,
+b.anchor_event_page as event_page_location,
 
 
 /* ★ セッション：全部の属性総計 */
 COUNT(DISTINCT IF(
-  sb.splited_page_location = sb.anchor_event_page,
-  sb.user_unique_session_id,
+  b.splited_page_location = b.anchor_event_page,
+  b.user_unique_session_id,
   NULL
 )) AS All_official_events_session,
 
 COUNT(DISTINCT IF(
-  sb.page_location LIKE '%surveys%'
-  AND sb.page_location LIKE '%responses/new%',
-  sb.user_unique_session_id,
+  b.page_location LIKE '%surveys%'
+  AND b.page_location LIKE '%responses/new%',
+  b.user_unique_session_id,
   NULL
 )) AS All_questionnaire_entrance_session,
 
 COUNT(DISTINCT IF(
-  sb.page_location LIKE '%surveys%'
-  AND REGEXP_CONTAINS(sb.page_location, r'responses/[0-9]+'),
-  sb.user_unique_session_id,
+  b.page_location LIKE '%surveys%'
+  AND REGEXP_CONTAINS(b.page_location, r'responses/[0-9]+'),
+  b.user_unique_session_id,
   NULL
 )) AS All_questionnaire_complete_session,
 
 COUNT(DISTINCT IF(
-  sb.page_location LIKE '%surveys%'
+  b.page_location LIKE '%surveys%'
   AND page_location LIKE '%content%',
-  sb.user_unique_session_id,
+  b.user_unique_session_id,
   NULL
 )) AS All_LP_after_questionnaire_complete_session,
 
@@ -271,32 +271,32 @@ COUNT(DISTINCT IF(
 /* ★ セッション：ログインユーザー */
 COUNT(DISTINCT IF(
    sf.is_logged_in_at_official_events = 0
-  AND sb.splited_page_location = sb.anchor_event_page,
-  sb.user_unique_session_id,
+  AND b.splited_page_location = b.anchor_event_page,
+  b.user_unique_session_id,
   NULL
 )) AS login_official_events_session,
 
 COUNT(DISTINCT IF(
  sf.is_logged_in_at_official_events = 0
-  AND sb.page_location LIKE '%surveys%'
-  AND sb.page_location LIKE '%responses/new%',
-  sb.user_unique_session_id,
+  AND b.page_location LIKE '%surveys%'
+  AND b.page_location LIKE '%responses/new%',
+  b.user_unique_session_id,
   NULL
 )) AS login_questionnaire_entrance_session,
 
 COUNT(DISTINCT IF(
   sf.is_logged_in_at_official_events = 0
-  AND sb.page_location LIKE '%surveys%'
-  AND REGEXP_CONTAINS(sb.page_location, r'responses/[0-9]+'),
-  sb.user_unique_session_id,
+  AND b.page_location LIKE '%surveys%'
+  AND REGEXP_CONTAINS(b.page_location, r'responses/[0-9]+'),
+  b.user_unique_session_id,
   NULL
 )) AS login_questionnaire_complete_session,
 
 COUNT(DISTINCT IF(
   sf.is_logged_in_at_official_events = 0
-  AND sb.page_location LIKE '%surveys%'
+  AND b.page_location LIKE '%surveys%'
   AND page_location LIKE '%content%',
-  sb.user_unique_session_id,
+  b.user_unique_session_id,
   NULL
 )) AS login_LP_after_questionnaire_complete_session,
 
@@ -407,7 +407,7 @@ b.anchor_event_page
   
 click_count as (
 SELECT
-sb.event_date,
+b.event_date,
 sf.device_category,
 sf.entrance_source,
 b.anchor_event_page as event_page_location,
@@ -500,7 +500,7 @@ ON sf.user_unique_session_id = b.user_unique_session_id
 WHERE b.anchor_event_page IS NOT NULL
 
 group by 
-sb.event_date,
+b.event_date,
 sf.device_category,
 sf.entrance_source,
 b.anchor_event_page
