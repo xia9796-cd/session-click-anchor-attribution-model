@@ -27,6 +27,9 @@ stg_session_click_anchor_attribute_regexp
 stg_session_click_anchor_attribute_regexp
   ↓
 int_session_click_anchor_attribute_flags
+
+stg_session_click_anchor_attribute_regexp
+int_session_click_anchor_attribute_flags
   ├─ int_session_click_anchor_attribute_clickcount
   └─ int_session_click_anchor_attribute_sessioncount
 
