@@ -12,16 +12,16 @@ b.anchor_event_page as event_page_location,
 SUM(CASE WHEN
   b.event_name = 'OfficialEventsClick'
   AND b.Click_Classes LIKE '%participateBtn%'
-THEN 1 ELSE 0 END) AS Click_All_event_participattion,
+THEN 1 ELSE 0 END) AS Click_All_event_participation,
 
 SUM(CASE WHEN
   b.event_name = 'OfficialEventsClick'
   AND b.Click_Classes LIKE '%squareBtnM%'
-THEN 1 ELSE 0 END) AS Click_All_questionnaire_complete_event_participattion,
+THEN 1 ELSE 0 END) AS Click_All_questionnaire_complete_event_participation,
 
 SUM(CASE WHEN
   b.event_name = 'AfterQuestionnaireGoogleFormClick'
-THEN 1 ELSE 0 END) AS Click_All_googleform_event_participattion,
+THEN 1 ELSE 0 END) AS Click_All_googleform_event_participation,
 
 
 /* ★ クリック：ログインユーザー */
@@ -30,18 +30,18 @@ SUM(CASE WHEN
   sf.is_logged_in_at_official_events = 0
   AND b.event_name = 'OfficialEventsClick'
   AND b.Click_Classes LIKE '%participateBtn%'
-THEN 1 ELSE 0 END) AS Click_login_event_participattion,
+THEN 1 ELSE 0 END) AS Click_login_event_participation,
 
 SUM(CASE WHEN
   sf.is_logged_in_at_official_events = 0
   AND b.event_name = 'OfficialEventsClick'
   AND b.Click_Classes LIKE '%squareBtnM%'
-THEN 1 ELSE 0 END) AS Click_login_questionnaire_complete_event_participattion,
+THEN 1 ELSE 0 END) AS Click_login_questionnaire_complete_event_participation,
 
 SUM(CASE WHEN
   sf.is_logged_in_at_official_events = 0
   AND b.event_name = 'AfterQuestionnaireGoogleFormClick'
-THEN 1 ELSE 0 END) AS Click_login_googleform_event_participattion,
+THEN 1 ELSE 0 END) AS Click_login_googleform_event_participation,
 
 /* ★ クリック：未ログインユーザー全て */
 
@@ -49,18 +49,18 @@ SUM(CASE WHEN
   sf.is_logged_in_at_official_events = 1
   AND b.event_name = 'OfficialEventsClick'
   AND b.Click_Classes LIKE '%participateBtn%'
-THEN 1 ELSE 0 END) AS Click_UnloginAll_event_participattion,
+THEN 1 ELSE 0 END) AS Click_UnloginAll_event_participation,
 
 SUM(CASE WHEN
   sf.is_logged_in_at_official_events = 1
   AND b.event_name = 'OfficialEventsClick'
   AND b.Click_Classes LIKE '%squareBtnM%'
-THEN 1 ELSE 0 END) AS Click_UnloginAll_questionnaire_complete_event_participattion,
+THEN 1 ELSE 0 END) AS Click_UnloginAll_questionnaire_complete_event_participation,
 
 SUM(CASE WHEN
   sf.is_logged_in_at_official_events = 1
   AND b.event_name = 'AfterQuestionnaireGoogleFormClick'
-THEN 1 ELSE 0 END) AS Click_UnloginAll_googleform_event_participattion,
+THEN 1 ELSE 0 END) AS Click_UnloginAll_googleform_event_participation,
 
 
 
@@ -71,20 +71,20 @@ SUM(CASE WHEN
   AND sf.is_registered_at_official_events = 1
   AND b.event_name = 'OfficialEventsClick'
   AND b.Click_Classes LIKE '%participateBtn%'
-THEN 1 ELSE 0 END) AS Click_UnloginNew_event_participattion,
+THEN 1 ELSE 0 END) AS Click_UnloginNew_event_participation,
 
 SUM(CASE WHEN
   sf.is_logged_in_at_official_events = 1
   AND sf.is_registered_at_official_events= 1
   AND b.event_name = 'OfficialEventsClick'
   AND b.Click_Classes LIKE '%squareBtnM%'
-THEN 1 ELSE 0 END) AS Click_UnloginNew_questionnaire_complete_event_participattion,
+THEN 1 ELSE 0 END) AS Click_UnloginNew_questionnaire_complete_event_participation,
 
 SUM(CASE WHEN
   sf.is_logged_in_at_official_events = 1
   AND sf.is_registered_at_official_events = 1
   AND b.event_name = 'AfterQuestionnaireGoogleFormClick'
-THEN 1 ELSE 0 END) AS Click_UnloginNew_googleform_event_participattion,
+THEN 1 ELSE 0 END) AS Click_UnloginNew_googleform_event_participation,
 
 
 
