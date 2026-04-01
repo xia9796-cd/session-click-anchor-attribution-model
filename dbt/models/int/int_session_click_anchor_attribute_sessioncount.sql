@@ -140,7 +140,7 @@ COUNT(DISTINCT IF(
   AND b.page_location LIKE '%content%',
   b.user_unique_session_id,
   NULL
-)) AS UnloginNew_LP_after_questionnaire_complete_session,
+)) AS UnloginNew_LP_after_questionnaire_complete_session
 
 
 FROM (
