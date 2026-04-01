@@ -45,4 +45,12 @@ mart_session_click_anchor_attribute
 ## 設計思想
 ### incrementalの期間について
 ### uniue_keyについて
+## テスト
+### sessionの依存・相関関係チェック
+※intとmartの両方でテストを実行。
+errorが発生した際に、原因がJOIN事故なのか算出ロジックなのか判別するため。
+### clickの依存・相関関係チェック
+※intとmartの両方でテストを実行。
+errorが発生した際に、原因がJOIN事故なのか算出ロジックなのか判別するため。
+### rateの状態チェック
 
