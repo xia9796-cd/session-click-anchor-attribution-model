@@ -1,5 +1,20 @@
 # dbt modelsについて
 ※'README.md'にて大まかな概要は記載しているので、ここではdbtモデルにのみ言及する。
+## dbtファイル内の構成（目次）
+```
+dbt
+  ├─macros：macroフォルダ 
+  ├─models：SQLモデルフォルダ
+  |  ├─ int：intのSQLファイルが格納してあるフォルダ
+  |  ├─ mart：martのSQLファイルが格納してあるフォルダ
+  |  └─ stg：stgのSQLファイルが格納してあるフォルダ
+  └─ tests
+     ├─ logics：テストのロジックのSQLファイルが格納してある（macro使用なし）フォルダ
+     ├─ tests_output_CLI：macro使用したテスト、使用してないテストの、両者のテスト結果
+     └─ with_macros：macroを使用したSQLファイルが格納してあるフォルダ
+     
+```
+
 ## stg/int/martのそれぞれの役割について
 ### stg
 - stg_session_click_anchor_attribute.sql
