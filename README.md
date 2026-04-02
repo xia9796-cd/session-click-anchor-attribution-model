@@ -3,6 +3,18 @@ interval-based attribution model using session anchors and window function in Bi
 
 README
 
+## このデポジトリ内のファイル構造（目次）
+```
+dbt：dbt設計（※dbtの詳細は`README_dbtCLI.md`に記載。）
+  ├─macros：macroフォルダ 
+  ├─models：SQLモデルフォルダ
+  └─ tests：テスト関係のフォルダ
+sample_output：作成したテーブルのサンプル
+sql：SQLファイルが格納してあるフォルダ
+     
+     
+```
+
 ## 概要
 このプロジェクトはGA4において、日跨ぎセッションを考慮した上で、 
 アンカーページに対して、通過したページの種類ごとにセッション属性を確定して、
