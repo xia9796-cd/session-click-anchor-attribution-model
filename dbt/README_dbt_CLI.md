@@ -1,5 +1,5 @@
 # dbt modelsについて
-※'README.md'にて大まかな概要は記載しているので、ここではdbtモデルにのみ言及する。
+※'[README.md](https://github.com/xia9796-cd/session-click-anchor-attribution-model/blob/main/README.md)'にて大まかな概要は記載しているので、ここではdbtモデルにのみ言及する。
 ## dbtファイル内の構成（目次）
 ```
 dbt
