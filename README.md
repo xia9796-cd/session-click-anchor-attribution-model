@@ -100,7 +100,7 @@ google form 
 - device_category,STRING
  
   
-    -- ★ 全部の属性総計
+    -- ★ 全部の属性総計(全ユーザー)
 - All_official_events_session,INT64
 - All_questionnaire_entrance_session,INT64
 - All_questionnaire_complete_session,INT64
@@ -110,7 +110,7 @@ google form 
 - Click_All_googleform_event_participattion,INT64
 
 
-  -- ★ ログインユーザー
+  -- ★ ログインユーザー全て（全ユーザーのうちログインをすでにしているユーザー）
 - login_official_events_session,INT64
 - login_questionnaire_entrance_session,INT64
 - login_questionnaire_complete_session,INT64
@@ -119,7 +119,7 @@ google form 
 - Click_login_questionnaire_complete_event_participattion,INT64
 - Click_login_googleform_event_participattion,INT64
 
-  -- ★ 未ログインユーザー全て
+  -- ★ 未ログインユーザー全て（全ユーザーのうちofficial_eventsページ到達後にログインがあったユーザー）
 - UnloginAll_official_events_session,INT64
 - UnloginAll_questionnaire_entrance_session,INT64
 - UnloginAll_questionnaire_complete_session,INT64
