@@ -1,0 +1,123 @@
+version: 2
+
+models:
+  - name: mart_session_click_anchor_attribute
+    description: |
+      セッション単位でのクリック・イベント指標を統合したテーブル。
+      全体（All）、ログイン済み（login）、未ログイン（UnloginAll）で分解し、
+      各種セッション数・クリック数・率を保持する。
+
+    columns:
+      # =========================
+      # 基本ディメンション
+      # =========================
+      - name: event_date
+        description: イベント日付
+
+      - name: entrance_source
+        description: 流入元
+
+      - name: event_page_location
+        description: イベントページURL
+
+      - name: device_category
+        description: デバイスカテゴリ
+
+      # =========================
+      # ALL（全ユーザー）
+      # =========================
+      - name: All_official_events_session
+        description: 全ユーザーのイベントページ到達セッション数
+
+      - name: All_questionnaire_entrance_session
+        description: 全ユーザーのアンケート開始セッション数
+
+      - name: All_questionnaire_complete_session
+        description: 全ユーザーのアンケート完了セッション数
+
+      - name: All_LP_after_questionnaire_complete_session
+        description: 全ユーザーのアンケート完了後LP到達セッション数
+
+      - name: Click_All_event_participattion
+        description: 全ユーザーのイベント参加クリック数
+
+      - name: Click_All_questionnaire_complete_event_participattion
+        description: 全ユーザーのアンケート完了イベントクリック数
+
+      - name: Click_All_googleform_event_participattion
+        description: 全ユーザーのGoogleフォームクリック数
+
+      # =========================
+      # login（ログインユーザー）
+      # =========================
+      - name: login_official_events_session
+        description: ログインユーザーのイベントページ到達セッション数
+
+      - name: login_questionnaire_entrance_session
+        description: ログインユーザーのアンケート開始セッション数
+
+      - name: login_questionnaire_complete_session
+        description: ログインユーザーのアンケート完了セッション数
+
+      - name: login_LP_after_questionnaire_complete_session
+        description: ログインユーザーのアンケート完了後LP到達セッション数
+
+      - name: Click_login_event_participattion
+        description: ログインユーザーのイベント参加クリック数
+
+      - name: Click_login_questionnaire_complete_event_participattion
+        description: ログインユーザーのアンケート完了イベントクリック数
+
+      - name: Click_login_googleform_event_participattion
+        description: ログインユーザーのGoogleフォームクリック数
+
+      # =========================
+      # UnloginAll（未ログインユーザー）
+      # =========================
+      - name: UnloginAll_official_events_session
+        description: 未ログインユーザーのイベントページ到達セッション数
+
+      - name: UnloginAll_questionnaire_entrance_session
+        description: 未ログインユーザーのアンケート開始セッション数
+
+      - name: UnloginAll_questionnaire_complete_session
+        description: 未ログインユーザーのアンケート完了セッション数
+
+      - name: UnloginAll_LP_after_questionnaire_complete_session
+        description: 未ログインユーザーのアンケート完了後LP到達セッション数
+
+      - name: Click_UnloginAll_event_participattion
+        description: 未ログインユーザーのイベント参加クリック数
+
+      - name: Click_UnloginAll_questionnaire_complete_event_participattion
+        description: 未ログインユーザーのアンケート完了イベントクリック数
+
+      - name: Click_UnloginAll_googleform_event_participattion
+        description: 未ログインユーザーのGoogleフォームクリック数
+
+      # =========================
+      # Rate（率）
+      # =========================
+      - name: All_events_participate_rate
+        description: 全ユーザーのイベント参加率
+
+      - name: login_events_participate_rate
+        description: ログインユーザーのイベント参加率
+
+      - name: UnloginAll_events_participate_rate
+        description: 未ログインユーザーのイベント参加率
+
+      - name: UnloginNew_events_participate_rate
+        description: 未ログイン（新規）のイベント参加率
+
+      - name: All_questionnaire_complete_rate
+        description: 全ユーザーのアンケート完了率
+
+      - name: login_questionnaire_complete_rate
+        description: ログインユーザーのアンケート完了率
+
+      - name: UnloginAll_questionnaire_complete_rate
+        description: 未ログインユーザーのアンケート完了率
+
+      - name: UnloginNew_questionnaire_complete_rate
+        description: 未ログイン（新規）のアンケート完了率
