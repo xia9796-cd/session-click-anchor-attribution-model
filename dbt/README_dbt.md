@@ -44,6 +44,8 @@ mart_session_click_anchor_attribute
 ```
 ## 設計思想
 ### incrementalの期間について
+- CURRENT_DATE INTERVAL 7 DAY ~ CURRENT_DATE INTERVAL 2 DAY の期間をDELETE&INSERT
+- 毎日JST09:00に実行 →GA4のデータが落ちるまでの遅延を考慮して、期間の開始日をINTERVAL7日前からにしている。 →またGA4ではリアルタイムでデータテーブルが作られるわけではないので、確実にデータが存在する2日前までを期間の終了日にする
 
 ## テスト
 ### sessionの依存・相関関係チェック
