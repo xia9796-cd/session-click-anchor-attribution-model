@@ -12,7 +12,7 @@ dbt：dbt設計関係
 sample_output：作成したテーブルのサンプル
 sql：SQLファイルが格納してあるフォルダ   
 ```
-※`dbtフォルダの詳細は、[README_dbtCLI.md](https://github.com/xia9796-cd/session-click-anchor-attribution-model/blob/main/dbt/README_dbt_CLI.md)`に記載。
+※dbtフォルダの詳細は、[README_dbtCLI.md](https://github.com/xia9796-cd/session-click-anchor-attribution-model/blob/main/dbt/README_dbt_CLI.md)に記載。
 
 ## 概要
 このプロジェクトはGA4において、日跨ぎセッションを考慮した上で、 
