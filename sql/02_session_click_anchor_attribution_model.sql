@@ -188,8 +188,7 @@ session_flags AS (
 
 
     IF(
-      MIN(IF(page_location LIKE '%/users/add%'
-      OR page_location LIKE '%new_users/which%', event_ts, NULL)) >=
+      MIN(IF(page_location LIKE '%new_users/which%', event_ts, NULL)) >=
       MIN(IF(page_location LIKE '%official-events%',event_ts, NULL)),1,0) 
       as is_registered_at_official_events,
 
